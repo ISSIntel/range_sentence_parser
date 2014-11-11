@@ -16,6 +16,20 @@ class RangeSentenceParser
     range_sentence_parser.parse!
   end
 
+  # Unparses a previously parsed array
+  #
+  # Sample usage:
+  #
+  # RangeSentenceParser.unparse!([])                       # => ''
+  # RangeSentenceParser.unparse!([1990])                   # => '1990'
+  # RangeSentenceParser.unparse!([1990, 1995])             # => '1990; 1995'
+  # RangeSentenceParser.unparse!([1990..1995])             # => '1990-1995'
+  # RangeSentenceParser.unparse!([1990, 1995..2000, 2005]) # => '1990; 1995-2000; 2005'
+  def self.unparse!(parsed_array)
+    range_sentence_parser = self.new(parsed_array)
+    range_sentence_parser.unparse
+  end
+
   # Validate the sentence and return true or false
   #
   # Usage:
@@ -52,6 +66,10 @@ class RangeSentenceParser
         number.to_i
       end
     end
+  end
+
+  def unparse
+    sentence.map{ |el| el.is_a?(Range) ? "#{el.first}-#{el.last}" : el.to_s }.join('; ')
   end
 
   def valid?
